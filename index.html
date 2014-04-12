@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>RescueCell CC</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- fav icon -->
+    <link rel="icon" 
+    			type="image/x-icon" 
+    			href="image/favicon.ico" />
+
+    <!-- Three.js & controls WebGL library -->
+    <script src="js/lib/three.min.js"></script>
+		<script src="js/lib/controls/OrbitControls.js"></script>
+		<!-- WebGL support detector -->
+		<script src="js/lib/Detector.js"></script>
+		<!-- 3D performance stats counter lib -->
+		<script src="js/lib/stats.min.js"></script>
+  	<!-- Coordinates transformation lib -->
+		<script src="js/lib/NDSFutility.js"></script>
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/lib/jquery-1.11.0.min.js"></script>
+    <!-- jQuery DataTables plugin -->
+    <script src="js/lib/plugin/jquery.dataTables.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/lib/bootstrap.min.js"></script>
+
+	</head>
+
+	<body>
+		<!-- Top navbar -->
+		<div class="navbar navbar-default navbar-static-top no-bottom-margin">
+			<div class="container-fluid">
+   	    	<a href="#" class="navbar-brand pull-left logo">
+   	    	<img src="image/logo.png" alt="RescueCell CC"> Control Center (CC)
+   	    		</a>
+   	    	<button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
+   	    		<span class="icon-bar"></span>	
+   	    		<span class="icon-bar"></span>	
+   	    		<span class="icon-bar"></span>	
+   	    	</button>
+   	    			
+   	    	<div class="collapse navbar-collapse navHeaderCollapse">
+   	    		<div class="nav navbar-nav navbar-right">
+				
+   	    			<!-- Button to trigger modal -->
+					<li><a href="#filterModal" role="button" class="btn" data-toggle="modal">Settings</a></li>
+				</div>
+   	    	</div>
+   		</div>
+  	</div>
+  	<!-- main container -->
+  	<div class="container-fluid">
+			<div class="row no-upper-gap">
+				<div id="grid" class="col-sm-8 grid">
+					<!-- WebGL canvas here -->
+				</div>
+        <div class="col-sm-4 upper-gap">  
+        		<!-- device status table panel -->
+						<div class="panel centered panel-primary">
+							<div class="panel-heading">
+							<span class="glyphicon glyphicon-phone"></span> Status of Nodes & Terminals
+						</div>
+						 <div class="panel-body">
+						 	<div class="node-list">
+							<table id="device-table" class="table table-striped table-hover table-condensed">
+  							<thead>
+    							<tr>
+      							<th>#</th>
+      							<th>Device</th>
+      							<th>ID</th>
+      							<th class="ip-column">IP Address</th>
+      							<th class="status-column">Status</th>
+    							</tr>
+  							</thead>
+  							<tbody class="device-list">
+  							</tbody>
+							</table> 
+							</div>
+						</div>
+        		</div>
+        		<!-- object info panel-->
+        		<div class="well well-changes centered">
+        			<ul>
+        				<div class="row">
+    						<div id="snode" class="key key-default" data-toggle="popover" data-placement="left" 
+    							data-content="Static Nodes are Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+    							<img src="image/red_sphere.png"> Static Node (sNode)</div>
+    						</div>
+    						<div class="row">
+    						<div id="mnode" class="key key-default" data-toggle="popover" data-placement="left" 
+    							data-content="Mobile Nodes are Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+    							<img src="image/green_sphere.png"> Mobile Node (mNode)</div>
+    						</div>
+    						<div class="row">
+    						<div id="mterminal" class="key key-default" data-toggle="popover" data-placement="left" 
+    							data-content="Mobile Terminals are Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+    							<img src="image/blue_sphere.png"> Mobile Terminal (MT)</div>
+    						</div>
+    					</ul>
+  						</div>
+  					<!-- connection console panel -->	
+        		<div class="panel centered panel-warning">
+							<div class="panel-heading">
+							<span class="glyphicon glyphicon-flash"></span> Process Information Console
+						</div>
+						 <div id="console" class="panel-body console">
+    						
+  						</div>
+        		</div>
+        </div>
+			</div>
+  	</div>
+    
+    <!-- Filter Modal -->
+        <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Settings</h4>
+              </div>
+              <div class="modal-body">
+                <p>connection (server listening port, detection algorithm port etc) and <br />
+                	display (accuracy, sNode polygon etc) settings <br />
+                	will be placed here soon..</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        
+    <!-- JS Loader -->    
+    <script src="main.js"></script>
+  </body> 
+
+</html>

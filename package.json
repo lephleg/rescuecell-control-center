@@ -1,0 +1,13 @@
+{
+  "name": "RescueCellCC",
+  "description": "RescueCell Control Center",
+  "version": "0.9.0",
+  "author": "LePhleg <lephleg@gmail.com>",
+  "main": "index.html",
+  "window": {
+	"icon": "image/icon.png",
+    "toolbar": false,
+	"width": 900,
+	"height": 600
+  }
+}
