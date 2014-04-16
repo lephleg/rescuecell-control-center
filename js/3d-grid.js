@@ -14,10 +14,16 @@ var RADIUS = 0.35,
 var RED_SPHERE_MATERIAL = new THREE.MeshLambertMaterial(
 		{ color: 0xCC0000 });
 var GREEN_SPHERE_MATERIAL = new THREE.MeshLambertMaterial(
-		{ color: 0x229210 });				
+		{ color: 0x229210 });
 var BLUE_SPHERE_MATERIAL = new THREE.MeshLambertMaterial(
 		{ color: 0x004dfc });
 		
+//Accuracy indicator design parameters
+var ACCURACY_MATERIAL = new THREE.MeshBasicMaterial( 
+		{ color: 0xF0C400, 
+			transparent: true });
+ACCURACY_MATERIAL.opacity = 0.4;
+
 /*===============================================================*/
 
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -112,7 +118,7 @@ function render() {
 
 }
 
-function createSphere(device) {
+function setSphere(device) {
 	
 	var material;
 	if (device.type == "sNode") {
@@ -143,22 +149,6 @@ function updateSphere(device) {
 	//copy existing mesh properties
 	var sphere = device.mesh;
 	
-	/*
-	var target = {x:lat, z:lon, y:alt};
-	var source = {x:sphere.position.x, z:sphere.position.z, y:sphere.position.y};
-	var tween = new TWEEN.Tween(source).to(target, 2000);
-	
-	tween.onUpdate(function(){
-    sphere.position.x = source.x;
-    sphere.position.y = source.y;
-    sphere.position.z = source.z;
-    render();
-});
-	
-	tween.easing(TWEEN.Easing.Quadratic.InOut);
-	tween.start();
-	*/
-
 	//update its position
 	sphere.position.x = device.position.lat;
 	sphere.position.z = device.position.lon;
@@ -180,3 +170,60 @@ function centerCamera(mesh) {
 	
 	render();
 }
+
+//creates a semi-transparent sphere mesh around the device as an accuracy indicator
+function setAccuracy(device) {
+	
+	//use accuracy value as sphere radius and a transparent material
+	var radius = device.acc,
+    geometry = new THREE.SphereGeometry( radius, SEGMENTS, RINGS );
+    
+  var range = new THREE.Mesh(geometry, ACCURACY_MATERIAL);
+    
+  //use device position as its center  
+  range.position.set(device.position.lat,device.position.alt,device.position.lon);
+  
+	scene.add(range);
+	render();
+	
+	return range;
+}
+
+//updates the current accuracy indicator for the specified device
+//based on its new position and accuracy values
+function updateAccuracy(device) {
+	
+	//remove old mesh from scene
+	scene.remove(device.range);
+	
+	//create a new geometry with the new radius
+	var geometry = new THREE.SphereGeometry( device.acc, SEGMENTS, RINGS );
+
+	//create a new mesh with a the new geometry and the old material
+	var range = new THREE.Mesh(geometry, ACCURACY_MATERIAL);
+
+	//set its position
+	range.position.x = device.position.lat;
+	range.position.z = device.position.lon;
+	range.position.y = device.position.alt; 
+	 
+	scene.add(range);
+	render();
+	
+	return range;
+}
+
+function displayAccuracy(device) {
+	
+	device.range.visible = true;
+	render();
+	
+}
+
+function hideAccuracy(device) {
+
+	device.range.visible = false;
+	render();
+	
+}
+

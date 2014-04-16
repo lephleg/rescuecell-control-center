@@ -16,6 +16,9 @@ var CHK_TIMEOUT = 2 * 60 * 1000; //set activity timeout to 2mins
 var ACTIVE_ICON_URL = "image/connection-active.png"; 
 var INACTIVE_ICON_URL = "image/connection-inactive.png";
 
+//Display accuracy on MTs constant (should be defined by settings)
+var ACCURACY = true;
+
 /* =====================================================*/
 
 var dgram = require("dgram");
@@ -55,7 +58,7 @@ server.on("message", function (msg, rinfo) {
 	}
 	
 	//store or update data on devMatrix
-	var matrix = store(dev);
+	storeData(dev);
 	
 	//updateGUI
 	updateGUI(dev);
@@ -148,7 +151,6 @@ function analyzer(item) {
 		var posXY = transformLLtoXY(origin, posLL);
 		//create a new device instance with the properties from analysis
 		var dev = new device(data[0],type, item.address, posXY);
-		print("Device created on: " + dev.time.toLocaleTimeString());
 
 		//create extra property for accuracy
 		dev["acc"] = data[5];
@@ -202,18 +204,26 @@ function updateGUI(dev) {
 	
 }
 
-//update the 3D canvas
+//creates the 3D objects needed and updates the canvas
 function updateCanvas(device) {
-	var sphere;
+		
 	if (!exists) {
-		sphere = createSphere(device);
+		device.mesh = setSphere(device);
 	} else {
-		sphere = updateSphere(device);
+		device.mesh = updateSphere(device);
 	}
 	
-	//create extra property for mesh 
-	device["mesh"] = sphere;
-	storeMesh(device);
+	//if MT, create or update its accuracy indicator
+	if (device.type == "MT") {
+		if (!exists) {
+			device.range = setAccuracy(device);
+		} else {
+			device.range = updateAccuracy(device);
+		}	
+	}
+	
+	//store 3D objects to devMatrix
+	storeMeshes(device);
 	print("3D canvas updated.");
 
 }
@@ -240,6 +250,7 @@ function device(id, type, address, position) {
 	this.time = new Date();
 	this.active = true;
 	this.mesh = null;
+	this.range = null;
 	
 	this.devToString = devToString;
 	function devToString() {
@@ -264,9 +275,8 @@ function position(lat,lon,alt) {
 	
 }
 
-//stores or updates a device record on the device matrix
-//returns the updated device matrix
-function store(device) {
+//stores or updates a device object on devMatrix
+function storeData(device) {
 	exists = false;
 	
 	//check if device already exists
@@ -281,6 +291,7 @@ function store(device) {
 			
 			//pass 3d mesh to temp device to update canvas
 			device.mesh = devMatrix[i].mesh;
+			device.range = devMatrix[i].range;
 			
 			exists = true;
 			break;
@@ -292,16 +303,17 @@ function store(device) {
 		devMatrix.push(device);
 		print("Device stored successfully.");
 	}
-	
-	return devMatrix;
 }
 
-//stores a 3D mesh as a property of a device object on the device matrix
-function storeMesh(device) {
+//stores 3D meshes to a device object on devMatrix
+function storeMeshes(device) {
 	
 	for (i = 0; i < devMatrix.length; i++) {
 	 	if ((devMatrix[i].type == device.type) && (devMatrix[i].id == device.id)) {
 			devMatrix[i].mesh = device.mesh;
+			if (device.type == "MT") {
+				devMatrix[i].range = device.range;
+			}
 		}
 	}
 	
@@ -313,10 +325,18 @@ function transformLLtoXY(org, posLL) {
 
 	//set origin format required by NDSFutility
 	var   origin={};
-	origin={slat:posLL.lat, slon:posLL.lon,coord_system:1,
-			olat:org.lat,olon:org.lon,xoffset_mtrs:0,
-      yoffset_mtrs:0,
-      rotation_angle_degs:0,rms_error:0};
+	
+	origin={
+		slat:posLL.lat,
+		slon:posLL.lon,
+		coord_system:1,
+		olat:org.lat,
+		olon:org.lon,
+		xoffset_mtrs:0,
+    yoffset_mtrs:0,
+    rotation_angle_degs:0,
+    rms_error:0
+    };
 	
 	//[mode=2] for LL to XY translation
 	var ll2xy = translate_coordinates(2,origin);
