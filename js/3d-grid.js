@@ -32,7 +32,7 @@ var stats;
 var camera, controls, scene, renderer, gl;
 
 init();
-render();
+animate();
 
 function init() {
 				
@@ -108,14 +108,19 @@ function onWindowResize() {
 		renderer.setSize( window.innerWidth*0.75, window.innerHeight-125);
 	}
 */
-	render();
 }
 
 function render() {
 
 	renderer.render( scene, camera );
 	stats.update();
+}
 
+function animate() {
+	render();
+
+	TWEEN.update();
+	requestAnimationFrame( animate );
 }
 
 function setSphere(device) {
@@ -140,7 +145,6 @@ function setSphere(device) {
 	scene.add(sphere);
 	//centerCamera(sphere);
 	
-	render();
 	return sphere;
 }
 
@@ -149,13 +153,25 @@ function updateSphere(device) {
 	//copy existing mesh properties
 	var sphere = device.mesh;
 	
-	//update its position
-	sphere.position.x = device.position.lat;
-	sphere.position.z = device.position.lon;
-	sphere.position.y = device.position.alt;
-	
-	render();
+	//set the start and target position for the tween
+	var position = { x:sphere.position.x, z:sphere.position.z, y:sphere.position.y };
+	var target = { x:device.position.lat, z:device.position.lon, y:device.position.alt };
 
+	//set the time of animation
+	var tween = new TWEEN.Tween(position).to(target, 1000);
+	//set the easing function
+	tween.easing(TWEEN.Easing.Quadratic.InOut);
+	
+	//update position at every step
+	tween.onUpdate(function(){
+    sphere.position.x = position.x;
+    sphere.position.y = position.y;
+    sphere.position.z = position.z;
+	});
+	
+	//complete configuration and set it active
+	tween.start();
+	
 	return sphere;
 }
 
@@ -168,7 +184,6 @@ function centerCamera(mesh) {
 	//camera.position.x = (mesh.position.x+10);
 	camera.lookAt(new THREE.Vector3(mesh.position.x,mesh.position.y,mesh.position.z));
 	
-	render();
 }
 
 //creates a semi-transparent sphere mesh around the device as an accuracy indicator
@@ -184,7 +199,6 @@ function setAccuracy(device) {
   range.position.set(device.position.lat,device.position.alt,device.position.lon);
   
 	scene.add(range);
-	render();
 	
 	return range;
 }
@@ -208,7 +222,6 @@ function updateAccuracy(device) {
 	range.position.y = device.position.alt; 
 	 
 	scene.add(range);
-	render();
 	
 	return range;
 }
@@ -216,14 +229,12 @@ function updateAccuracy(device) {
 function displayAccuracy(device) {
 	
 	device.range.visible = true;
-	render();
 	
 }
 
 function hideAccuracy(device) {
 
 	device.range.visible = false;
-	render();
 	
 }
 
