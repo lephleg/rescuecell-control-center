@@ -7,6 +7,7 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-switch.css" rel="stylesheet">    
     <link href="css/styles.css" rel="stylesheet">
     <!-- fav icon -->
     <link rel="icon" 
@@ -28,6 +29,7 @@
     <script src="js/lib/plugin/jquery.dataTables.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/bootstrap-switch.min.js"></script>
 
 	</head>
 
@@ -101,6 +103,7 @@
     							data-content="Mobile Terminals are Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
     							<img src="image/blue_sphere.png"> Mobile Terminal (MT)</div>
     						</div>
+    						
     					</ul>
   						</div>
   					<!-- connection console panel -->	
@@ -109,7 +112,6 @@
 							<span class="glyphicon glyphicon-flash"></span> Process Information Console
 						</div>
 						 <div id="console" class="panel-body console">
-    						
   						</div>
         		</div>
         </div>
@@ -125,10 +127,14 @@
                 <h4 class="modal-title">Settings</h4>
               </div>
               <div class="modal-body">
-                <p>connection (server listening port, detection algorithm port etc) and <br />
-                	display (accuracy, sNode polygon etc) settings <br />
-                	will be placed here soon..</p>
-              </div>
+              	<div>							
+              		Display accuracy: 
+              		<input type="checkbox" data-size="mini" data-onColor="warning" data-onText="enable" data-offText="disable" checked>
+              	</div>	
+              	<script>
+              		$('input:checkbox').bootstrapSwitch();
+              	</script> 
+							</div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
@@ -138,6 +144,7 @@
         </div><!-- /.modal -->
         
     <!-- JS Loader -->    
+
     <script src="main.js"></script>
   </body> 
 
