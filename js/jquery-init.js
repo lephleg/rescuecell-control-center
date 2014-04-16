@@ -1,4 +1,7 @@
-// popover.js 
+// jquery-init.js 
+
+// Bootstrap-Switch
+
 // Popover | Bootstrap popover on-click code
 
 $('[data-toggle="popover"]').popover();
