@@ -1,11 +1,11 @@
 // jquery-init.js 
+// jQuery Init | Initialization code
 
-// Bootstrap-Switch
+// Bootstrap-Switch initialization
+$('input:checkbox').bootstrapSwitch();
 
-// Popover | Bootstrap popover on-click code
-
+// Bootstrap popovers initialization
 $('[data-toggle="popover"]').popover();
-
 $('body').on('click', function (e) {
 	$('[data-toggle="popover"]').each(function () {
   //the 'is' for buttons that trigger popups
@@ -14,4 +14,9 @@ $('body').on('click', function (e) {
     	$(this).popover('hide');
     }
   });
+});
+
+// Settings modal form submission
+$("#save-btn").on("show.bs.modal", function() {
+	setSettings();
 });
