@@ -8,6 +8,7 @@
 	"icon": "image/icon.png",
     "toolbar": false,
 	"width": 900,
-	"height": 600
+	"height": 600,
+	"resizable": false
   }
 }
