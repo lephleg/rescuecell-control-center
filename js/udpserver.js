@@ -222,6 +222,11 @@ function updateCanvas(device) {
 		}	
 	}
 	
+	//if accuracy indicator settings is off, make range invisible
+	if (!ACCURACY) {
+		hideAccuracy(device);
+	};
+	
 	//store 3D objects to devMatrix
 	storeMeshes(device);
 	print("3D canvas updated.");
@@ -378,4 +383,28 @@ function transmitter (mode,msg) {
 	 	
 	}
 
+}
+
+function setSettings() {
+	
+	
+	ACCURACY = $("#accuracy-switch").is(":checked");
+	
+	if (ACCURACY) {
+	 	for (i = 0; i < devMatrix.length; i++) {
+	 		if (devMatrix[i].type == "MT") {
+	 			displayAccuracy(devMatrix[i]);
+	 		}
+	 	}
+	 	print("Accuracy indicators activated.");
+	} else {
+	 	for (i = 0; i < devMatrix.length; i++) {
+	 		if (devMatrix[i].type == "MT") {
+	 			hideAccuracy(devMatrix[i]);
+	 		}
+	 	}
+	 	print("Accuracy indicators deactivated.");
+	}
+	
+	
 }

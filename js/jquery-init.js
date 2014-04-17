@@ -17,6 +17,9 @@ $('body').on('click', function (e) {
 });
 
 // Settings modal form submission
-$("#save-btn").on("show.bs.modal", function() {
+$("#save-btn").click(function() {
+
+	$('#settingsModal').modal('hide');
 	setSettings();
+	
 });
