@@ -1,10 +1,11 @@
 {
-  "name": "RescueCellCC",
-  "description": "RescueCell Control Center",
-  "version": "0.9.0",
+  "name": "RESCUECELL_CC",
+  "description": "RESCUECELL Control Centre (v1.00)",
+  "version": "0.9.8",
   "author": "LePhleg <lephleg@gmail.com>",
   "main": "index.html",
   "window": {
+	"title": "RESCUECELL Control Centre (v1.00)",
 	"icon": "image/icon.png",
     "toolbar": false,
 	"width": 900,

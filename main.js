@@ -1,8 +1,7 @@
 // main.js
-// Main | JavaScript files loader
+// Main | Main JavaScript file loader
 
-$.getScript("js/datatable.js", function(){});
-$.getScript("js/jquery-init.js", function(){});
-$.getScript("js/3d-grid.js", function(){});
+$.getScript("js/gui-init.js", function(){});
+$.getScript("js/world.js", function(){});
 $.getScript("js/gsm-launcher.js", function(){});
-$.getScript("js/udpserver.js", function(){});
+$.getScript("js/process.js", function(){});
