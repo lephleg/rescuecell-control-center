@@ -1,143 +1,198 @@
-
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>RescueCell CC</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<!-- Bootstrap -->
+		<!-- Bootstrap & Bootstrap Switch CSS -->
     <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/bootstrap-switch.css" rel="stylesheet">   
+    <!-- override styles & custom code --> 
     <link href="css/styles.css" rel="stylesheet">
-    <!-- fav icon -->
-    <link rel="icon" 
-    			type="image/x-icon" 
-    			href="image/favicon.ico" />
 
-    <!-- Three.js & controls WebGL library -->
-    <script src="js/lib/three.min.js"></script>
+    <!-- Three.js & navigation controls lib -->
+    <script src="js/lib/three.js"></script>
 		<script src="js/lib/controls/OrbitControls.js"></script>
+		<!-- Tween.js animation lib & RequestAnimationFrame -->
+		<script src="js/lib/tween.min.js"></script>
+		<script src="js/lib/RequestAnimationFrame.js"></script>
 		<!-- WebGL support detector -->
 		<script src="js/lib/Detector.js"></script>
-		<!-- 3D performance stats counter lib -->
+		<!-- 3D performance monitoring tool -->
 		<script src="js/lib/stats.min.js"></script>
   	<!-- Coordinates transformation lib -->
 		<script src="js/lib/NDSFutility.js"></script>
-		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="js/lib/convex_hull.js"></script>
+		<!-- jQuery lib & DataTables plugin -->
     <script src="js/lib/jquery-1.11.0.min.js"></script>
-    <!-- jQuery DataTables plugin -->
     <script src="js/lib/plugin/jquery.dataTables.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!-- Bootstrap & Bootstrap Switch -->
     <script src="js/lib/bootstrap.min.js"></script>
-
+    <script src="js/lib/bootstrap-switch.min.js"></script>
 	</head>
 
 	<body>
-		<!-- Top navbar -->
+		<!-- Top fluid navbar -->
 		<div class="navbar navbar-default navbar-static-top no-bottom-margin">
 			<div class="container-fluid">
-   	    	<a href="#" class="navbar-brand pull-left logo">
-   	    	<img src="image/logo.png" alt="RescueCell CC"> Control Center (CC)
-   	    		</a>
-   	    	<button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
-   	    		<span class="icon-bar"></span>	
-   	    		<span class="icon-bar"></span>	
-   	    		<span class="icon-bar"></span>	
-   	    	</button>
-   	    			
-   	    	<div class="collapse navbar-collapse navHeaderCollapse">
-   	    		<div class="nav navbar-nav navbar-right">
-				
-   	    			<!-- Button to trigger modal -->
-					<li><a href="#filterModal" role="button" class="btn" data-toggle="modal">Settings</a></li>
+				<!-- Project logo icon & Title -->
+   	    <a class="navbar-brand pull-left logo">
+   	    	<img src="image/logo.png" alt="RescueCell CC"> Control Centre
+   	    </a>
+   	    <!-- Top right buttons -->
+   	    <div class="nav navbar-nav navbar-right">
+   	    		<!-- Button to toggle canvas fullscreen view -->
+						<li><a role="button" class="btn"><span id="full-screen" class="glyphicon glyphicon-resize-full"></span></a></li>
+						<!-- Button to trigger Settings modal -->
+						<li><a href="#settingsModal" role="button" class="btn open-settingsModal" data-toggle="modal"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
 				</div>
-   	    	</div>
    		</div>
   	</div>
-  	<!-- main container -->
+  	
+  	<!-- main fluid container -->
   	<div class="container-fluid">
 			<div class="row no-upper-gap">
-				<div id="grid" class="col-sm-8 grid">
-					<!-- WebGL canvas here -->
+				<div onclick="onCanvasClick(event)" id="grid" class="col-sm-8 grid row-fluid">
+					<!-- WebGLrenderer output (aka canvas) here -->
 				</div>
-        <div class="col-sm-4 upper-gap">  
-        		<!-- device status table panel -->
-						<div class="panel centered panel-primary">
+				
+				<!-- Right side panels -->
+        <div id="panels" class="col-sm-4 upper-gap">  
+        		<!-- jQuery DataTable (device listing) panel -->
+						<div class="panel slide-right row-fluid centered panel-primary">
 							<div class="panel-heading">
-							<span class="glyphicon glyphicon-phone"></span> Status of Nodes & Terminals
-						</div>
-						 <div class="panel-body">
-						 	<div class="node-list">
-							<table id="device-table" class="table table-striped table-hover table-condensed">
-  							<thead>
-    							<tr>
-      							<th>#</th>
-      							<th>Device</th>
-      							<th>ID</th>
-      							<th class="ip-column">IP Address</th>
-      							<th class="status-column">Status</th>
-    							</tr>
-  							</thead>
-  							<tbody class="device-list">
-  							</tbody>
-							</table> 
+								<span class="glyphicon glyphicon-phone"></span> Status of Nodes & Terminals
 							</div>
-						</div>
+						 	<div class="panel-body">
+						 		<div class="node-list">
+									<table id="device-table" class="table table-striped table-hover table-condensed">
+  									<thead>
+    									<tr>
+      									<th>#</th>
+      									<th>Device</th>
+      									<th>ID</th>
+      									<th class="ip-column">IP Address</th>
+      									<th class="status-column">Status</th>
+    									</tr>
+  									</thead>
+  									<tbody class="device-list">
+  									</tbody>
+									</table> 
+								</div>
+							</div>
         		</div>
-        		<!-- object info panel-->
-        		<div class="well well-changes centered">
-        			<ul>
+        		
+        		<!-- Map key & node info panel-->
+        		<div class="well slide-right row-fluid">
+        			<ul class="ul-no-bottom">
         				<div class="row">
     						<div id="snode" class="key key-default" data-toggle="popover" data-placement="left" 
-    							data-content="Static Nodes are Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+    							data-content="Static Nodes are small units that are be placed in the surrounds of the affected area." data-original-title="" title="">
     							<img src="image/red_sphere.png"> Static Node (sNode)</div>
     						</div>
     						<div class="row">
     						<div id="mnode" class="key key-default" data-toggle="popover" data-placement="left" 
-    							data-content="Mobile Nodes are Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+    							data-content="Mobile Nodes are portable units that are carried by rescuers to improve detection and help them locate the victims." data-original-title="" title="">
     							<img src="image/green_sphere.png"> Mobile Node (mNode)</div>
     						</div>
     						<div class="row">
     						<div id="mterminal" class="key key-default" data-toggle="popover" data-placement="left" 
-    							data-content="Mobile Terminals are Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-original-title="" title="">
+    							data-content="Mobile Terminals are the possible cell devices on the victims detected by the positioning algorithm with an estimated accuracy." data-original-title="" title="">
     							<img src="image/blue_sphere.png"> Mobile Terminal (MT)</div>
     						</div>
+    						<!-- Hidden Latitude/Longitude/Altitude row -->
+    						<div class="row row-coords" id="coords">
+    							<div class="elem-coords key key-default" data-toggle="tooltip" title="Latidute"><img src="image/red_pin.png"><span id="lat"></span></div>
+    							<div class="elem-coords key key-default" data-toggle="tooltip" title="Longitude"><img src="image/blue_pin.png"><span id="long"></span></div>
+    							<div class="elem-coords key key-default" data-toggle="tooltip" title="Altitude"><img src="image/green_pin.png"><span id="alt"></span></div>    							
+    						</div>
     					</ul>
-  						</div>
-  					<!-- connection console panel -->	
-        		<div class="panel centered panel-warning">
+  					</div>
+  					
+  					<!-- Processing Console panel -->	
+        		<div class="panel slide-right row-fluid centered panel-warning">
 							<div class="panel-heading">
-							<span class="glyphicon glyphicon-flash"></span> Process Information Console
-						</div>
-						 <div id="console" class="panel-body console">
-    						
+								<span class="glyphicon glyphicon-flash"></span> Process Information Console
+							</div>
+						 	<div id="console" class="panel-body console">
   						</div>
         		</div>
         </div>
 			</div>
-  	</div>
+  	</div> <!-- /.main fluid container -->
     
-    <!-- Filter Modal -->
-        <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Settings</h4>
-              </div>
-              <div class="modal-body">
-                <p>connection (server listening port, detection algorithm port etc) and <br />
-                	display (accuracy, sNode polygon etc) settings <br />
-                	will be placed here soon..</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+    <!-- Settings modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+    	<div class="modal-dialog">
+      	<div class="modal-content">
+        	<div class="modal-header">
+        		<!-- Top right X button -->
+          	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          	<!-- Main modal title -->
+            <h4 class="modal-title"><span class="glyphicon glyphicon-cog"></span> Settings</h4>
+          </div>
+          <div class="modal-body">  
+          	<!-- General Settings panel -->  	
+          	<div class="panel panel-default">
+							<div class="panel-heading">
+    						<h3 class="panel-title"><span class="glyphicon glyphicon-wrench"></span>  General Settings</h3>
+  						</div>
+ 							<div class="panel-body">
+ 								<!-- Timeout internal setting -->
+              	<div class="input-group input-group-sm">
+      						<span class="input-group-addon">Set a node inactive after (seconds)</span>
+    							<input type="text" id="timeout" class="form-control input-sm" required size="3" maxlength="3">
+              	</div>
+  						</div>
+  					</div>
+            <!-- Connection Settings panel -->  	  	
+            <div class="panel panel-default">
+  						<div class="panel-heading">
+    						<h3 class="panel-title"><span class="glyphicon glyphicon-magnet"></span>  Connection Settings</h3>
+  						</div>
+ 							<div class="panel-body">
+ 								<!-- Server listening port setting -->
+								<div class="input-group input-group-sm">
+  								<span class="input-group-addon">UDP server listens on port</span>
+    							<input type="text" id="server-port" class="form-control input-sm" required size="5" maxlength="5">
+								</div>
+								<!-- PA address setting -->
+								<div class="input-group input-group-sm">
+  								<span class="input-group-addon">Positioning Algorithm IP address</span>
+    							<input type="text" id="pa-ip" class="form-control input-sm" required size="15" maxlength="15">
+  								<span class="input-group-addon">:</span>
+    							<input type="text" id="pa-port" class="form-control input-sm" required size="5" maxlength="5">
+								</div>
+  						</div>	
+						</div>
+						<!-- Display Options panel -->  	  	    
+						<div class="panel panel-default">
+							<div class="panel-heading">
+    						<h3 class="panel-title"><span class="glyphicon glyphicon-globe"></span>  Display Options</h3>
+  						</div>
+ 							<div class="panel-body">
+ 								<!-- Accuracy Indicators toggle switch -->
+ 								<div class="input-group input-group-sm">
+      						<span class="input-group-addon">Display accuracy indicators</span>
+              		<input type="checkbox" id="accuracy-switch" data-size="mini" checked>
+              	</div>
+              	<!-- sNodes polygon toggle switch -->
+ 								<div class="input-group input-group-sm">
+      						<span class="input-group-addon">Highlight search area (sNodes polygon)</span>
+              		<input type="checkbox" id="polygon-switch" data-size="mini" checked>
+              	</div>
+  						</div>
+  					</div>
+					</div>
+					<!-- Modal footer -->
+         	<div class="modal-footer">
+          	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="save-btn" class="btn btn-primary">Save changes</button>
+         	</div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
         
-    <!-- JS Loader -->    
+		<!-- Main JS Loader -->    
     <script src="main.js"></script>
   </body> 
 
