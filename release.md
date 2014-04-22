@@ -26,15 +26,15 @@
 
 *	Accuracy indicators has been added for MTs.
 *	Search area highlight polygon has been added.
-*	Clicking on a sphere 3d object reveals it’s real world coordinates and filters the Status of Node & Terminals table panel. Clicking everywhere else resets to general view.
-*	Control Centre’s window is now non resizable, to ensure selecting accuracy (fixed to 900x600).
+*	Clicking on a sphere 3d object reveals it's real world coordinates and filters the Status of Node & Terminals table panel. Clicking everywhere else resets to general view.
+*	Control Centre's window is now non resizable, to ensure selecting accuracy (fixed to 900x600).
 *	3D world full size mode button has been added.
 *	Settings modal is now full functional:
 > *	General Settings
 > > *	End-user can now set the inactivity timeout internal (default: 120 seconds)
 > *	Connection Settings
-> > *	Control Centre’s listening port can now be set at runtime. (default: 41234)
-> > *	Positioning Algorithm’s IP address and port can now be configured at runtime. (default: 127.0.0.1:55555)
+> > *	Control Centre's listening port can now be set at runtime. (default: 41234)
+> > *	Positioning Algorithm's IP address and port can now be configured at runtime. (default: 127.0.0.1:55555)
 > *	Display Options
 > > *	End-user can switch accuracy indicators visibility ON/OFF. (default: OFF)
 > > *	End-user can turn search area highlight polygon ON/OFF. (default: OFF)
